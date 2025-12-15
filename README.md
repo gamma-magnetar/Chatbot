@@ -1,230 +1,181 @@
-PPT-PDF RAG Chatbot (Text + Vision)
-Overview
+# 📊 PPT-PDF RAG Chatbot (Multimodal)
 
-This project implements a Retrieval-Augmented Generation (RAG) chatbot that can answer questions from PPT-based PDFs, including image-heavy slides and charts.
+A **Retrieval-Augmented Generation (RAG) chatbot** that answers questions from **PPT-based PDFs**, including **image-heavy slides and charts**, using **text extraction, OCR, and vision-based LLMs**.  
+The system is deployed using **Streamlit** and produces **grounded, hallucination-safe answers**.
 
-The system supports:
+---
 
-✅ Text-based PDFs (reports, documents)
+## 🚀 Features
 
-✅ Image-heavy PPT PDFs (slides, charts, diagrams)
+- Supports **text-based PDFs** and **image-heavy PPT PDFs**
+- **Vision-based chart & slide understanding**
+- OCR fallback for embedded images
+- FAISS-based vector search
+- Hallucination-safe RAG pipeline
+- Interactive Streamlit UI
 
-✅ Vision-based understanding of charts and visuals
+---
 
-✅ Grounded answers (no hallucinations)
+## 🧠 Models Used
 
-It combines PDF parsing, OCR, vision-LLMs, vector search (FAISS), and LLMs into a single Streamlit application.
+### Embedding Model
+- **sentence-transformers/all-MiniLM-L6-v2**
+- Converts document chunks into dense vector embeddings
+- Chosen for speed and semantic retrieval quality
 
-🧠 High-Level Architecture
-4
-Pipeline Flow
+### Language Model (Answer Generation)
+- **OpenAI GPT-4o / GPT-4o-mini**
+- Generates answers strictly from retrieved context
+
+### Vision Model (Charts & Images)
+- **GPT-4o (Vision)**
+- Interprets charts, trends, and visual relationships
+- Converts visual content into textual summaries for RAG
+
+---
+
+## 🏗️ Architecture
+
 PDF Upload
-   ↓
+↓
 Text Extraction (pdfplumber)
-   ↓
+↓
 Image OCR (Tesseract)
-   ↓
-Vision-based Slide Understanding (GPT-4o / Vision LLM)
-   ↓
+↓
+Vision-based Slide Understanding (GPT-4o Vision)
+↓
 Chunking
-   ↓
+↓
 Embeddings (Sentence Transformers)
-   ↓
+↓
 FAISS Vector Store
-   ↓
+↓
 User Query
-   ↓
+↓
 Context Retrieval
-   ↓
+↓
 LLM Answer (Grounded Response)
 
-✨ Key Features
 
-Multimodal RAG
+---
 
-Handles both text and image-only PPT PDFs
+## 📁 Project Structure
 
-Chart & Slide Understanding
 
-Vision LLM explains charts, trends, comparisons
 
-Hallucination-Safe
-
-Answers only from retrieved document context
-
-Modular & Extensible
-
-OCR, vision, embeddings, and retrieval are cleanly separated
-
-Interactive UI
-
-Streamlit-based web interface
-
-🧠 Models Used
-1️⃣ Embedding Model
-
-Model: sentence-transformers/all-MiniLM-L6-v2
-
-Purpose: Convert document chunks into vector embeddings
-
-Why: Fast, lightweight, high-quality semantic search
-
-2️⃣ Language Model (Text)
-
-Model: OpenAI GPT-4o / GPT-4o-mini
-
-Purpose: Generate final answers from retrieved context
-
-Behavior: Strictly grounded in retrieved chunks
-
-3️⃣ Vision Model (Charts & Images)
-
-Model: GPT-4o (Vision)
-
-Purpose:
-
-Understand charts visually
-
-Explain trends, comparisons, and insights
-
-Convert visual information into text for RAG
-
-Why Vision is required:
-
-OCR alone cannot understand chart relationships or trends
-
-📁 Project Structure
 ppt-pdf-rag-chatbot/
 │
-├── app.py                # Streamlit UI & session management
-├── ingest.py             # PDF ingestion & vector index creation
-├── rag.py                # Retrieval + LLM answering logic
-├── ocr_utils.py          # Image OCR utilities
-├── vision_utils.py       # Vision-based slide & chart understanding
+├── app.py # Streamlit UI & session handling
+├── ingest.py # PDF ingestion & vector index creation
+├── rag.py # Retrieval + answer generation
+├── ocr_utils.py # OCR utilities for images
+├── vision_utils.py # Vision-based chart & slide understanding
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
 │
-└── data/                 # (Ignored) Runtime data, FAISS index, uploads
+└── data/ # Runtime data (ignored in Git)
 
-⚙️ How It Works (Detailed)
-Step 1: PDF Ingestion
 
-Extracts selectable text using pdfplumber
+---
 
-Extracts embedded images and applies OCR
+## ⚙️ How It Works
 
-Detects image-heavy PDFs
+1. **PDF Ingestion**
+   - Extracts selectable text from PDF
+   - Extracts embedded images and applies OCR
 
-Step 2: Vision-Based Understanding (Image-Heavy PDFs)
+2. **Vision Processing (Image-Heavy PDFs)**
+   - Converts each slide/page into an image
+   - Vision LLM describes charts, trends, and insights
 
-Converts each slide/page into an image
+3. **Chunking & Embeddings**
+   - All extracted content is chunked
+   - Chunks converted into vector embeddings
 
-Sends image to a vision-capable LLM
+4. **Retrieval-Augmented Generation**
+   - Relevant chunks retrieved using FAISS
+   - LLM answers strictly from retrieved context
 
-Generates a textual explanation of charts and visuals
+---
 
-Step 3: Chunking & Embeddings
+## 🖥️ Running Locally
 
-All extracted text (text + OCR + vision summaries) is chunked
-
-Each chunk is embedded using Sentence Transformers
-
-Step 4: Vector Storage
-
-Embeddings stored in FAISS
-
-Enables fast semantic retrieval
-
-Step 5: Question Answering (RAG)
-
-User query is embedded
-
-Top-k relevant chunks retrieved
-
-LLM answers using only retrieved context
-
-🖥️ Running the App Locally
-1️⃣ Clone the repository
+### 1️⃣ Clone the repository
+```bash
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
 
-2️⃣ Create and activate virtual environment
+2️⃣ Create virtual environment
 python -m venv venv
 # Windows
 venv\Scripts\activate
-# Mac/Linux
+# macOS/Linux
 source venv/bin/activate
 
 3️⃣ Install dependencies
 pip install -r requirements.txt
 
-4️⃣ Set API Key
+4️⃣ Set API key
 # Windows (PowerShell)
 setx OPENAI_API_KEY "your_api_key_here"
 
-# Mac/Linux
+# macOS/Linux
 export OPENAI_API_KEY="your_api_key_here"
 
 
 Restart the terminal after setting the key.
 
-5️⃣ Run Streamlit
+5️⃣ Run the app
 streamlit run app.py
 
 
-Open in browser:
+Open:
 
 http://localhost:8501
 
-🚦 Usage Instructions
+🧪 Usage
 
-Upload a PDF (including PPT-based PDFs)
+Upload a PPT-based PDF
 
 Wait for ingestion to complete
 
-Ask questions like:
+Ask questions such as:
 
 “What trend does the revenue chart show?”
 
-“Summarize the key insights from this presentation”
+“Summarize the key insights from the slides”
 
-“What conclusion is drawn in the final slides?”
+“What conclusion is drawn in the presentation?”
 
-If the document contains no usable content, the app safely disables querying.
+If no usable content is found, the app safely disables querying.
 
-⚠️ Notes on API Usage
+⚠️ Notes
 
-Vision models require sufficient API quota
+Vision-based ingestion requires sufficient API quota
 
-If quota is exhausted:
+Vision processing is triggered only for image-heavy PDFs
 
-Text-based PDFs still work
-
-Vision ingestion may fail gracefully
-
-Vision extraction is triggered only for image-heavy PDFs to reduce cost
+Text-only PDFs continue to work without vision calls
 
 🔮 Future Improvements
 
 Slide-level citations in answers
 
-Caching vision summaries to reduce cost
-
-Toggle between OCR-only and Vision-mode
+Vision output caching to reduce cost
 
 Hybrid search (BM25 + vector)
 
-Multi-PDF knowledge base
+Multi-document knowledge base
 
 📌 Summary
 
-This project demonstrates a production-style multimodal RAG system capable of understanding text, images, and charts inside PPT-based PDFs, combining:
+This project demonstrates a production-style multimodal RAG system capable of understanding text, charts, and visuals inside PPT-based PDFs, combining:
 
 Document intelligence
 
-Vision-LLMs
+Vision-based LLMs
 
-Vector databases
+Vector search
 
 Streamlit deployment
