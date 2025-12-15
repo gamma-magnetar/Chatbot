@@ -1,3 +1,21 @@
 __pycache__/
 .env
 data/
+
+
+# Virtual env
+venv/
+
+# Data & indices
+data/
+*.index
+*.pkl
+
+# HuggingFace / ML cache
+.cache/
+**/.cache/
+models/
+
+# OS
+__pycache__/
+
