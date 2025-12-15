@@ -1,0 +1,10 @@
+streamlit
+pdfplumber
+pymupdf
+pytesseract
+Pillow
+faiss-cpu
+sentence-transformers
+langchain
+openai
+numpy
